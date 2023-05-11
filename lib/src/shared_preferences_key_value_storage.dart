@@ -1,7 +1,7 @@
 import 'package:chili_flutter_storage/chili_flutter_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesKeyValueStorage implements KeyValueStorage {
+class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
   final SharedPreferences _sharedPreferences;
 
   SharedPreferencesKeyValueStorage(this._sharedPreferences);
@@ -49,5 +49,23 @@ class SharedPreferencesKeyValueStorage implements KeyValueStorage {
   @override
   Future<void> clearAll() {
     return _sharedPreferences.clear();
+  }
+
+  @override
+  Future<void> setDouble(String key, double value) {
+    return _sharedPreferences.setDouble(key, value);
+  }
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    final allKeys = await getKeys();
+    var data = <String, String>{};
+
+    for (final key in allKeys) {
+      final value = _sharedPreferences.get(key);
+      data[key] = value.toString();
+    }
+
+    return data;
   }
 }

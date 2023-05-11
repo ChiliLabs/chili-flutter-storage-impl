@@ -3,7 +3,7 @@ import 'package:chili_flutter_storage/chili_flutter_storage.dart';
 
 typedef ErrorCallback = void Function(Object ex, StackTrace st);
 
-class SecureKeyValueStorage implements KeyValueStorage {
+class SecureKeyValueStorage implements SecureStorage {
   final FlutterSecureStorage _storage;
   final ErrorCallback onError;
 
@@ -92,5 +92,19 @@ class SecureKeyValueStorage implements KeyValueStorage {
     } catch (ex, st) {
       onError(ex, st);
     }
+  }
+
+  @override
+  Future<void> setDouble(String key, double value) async {
+    await _write(key: key, value: value.toString());
+  }
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    final data = await _storage.readAll();
+    final sortedData = Map.fromEntries(
+      data.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)),
+    );
+    return sortedData;
   }
 }
