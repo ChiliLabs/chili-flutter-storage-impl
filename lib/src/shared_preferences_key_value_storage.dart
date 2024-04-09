@@ -6,19 +6,10 @@ class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
 
   SharedPreferencesKeyValueStorage(this._sharedPreferences);
 
-  @override
-  Future<Set<String>> getKeys() async {
-    return _sharedPreferences.getKeys();
-  }
-
+  /// Get
   @override
   Future<String?> getString(String key) async {
     return _sharedPreferences.getString(key);
-  }
-
-  @override
-  Future<void> setString(String key, String value) {
-    return _sharedPreferences.setString(key, value);
   }
 
   @override
@@ -27,13 +18,29 @@ class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
   }
 
   @override
-  Future<void> setBool(String key, bool value) {
-    return _sharedPreferences.setBool(key, value);
+  Future<int?> getInt(String key) async {
+    return _sharedPreferences.getInt(key);
   }
 
   @override
-  Future<int?> getInt(String key) async {
-    return _sharedPreferences.getInt(key);
+  Future<double?> getDouble(String key) async {
+    return _sharedPreferences.getDouble(key);
+  }
+
+  @override
+  Future<Set<String>> getKeys() async {
+    return _sharedPreferences.getKeys();
+  }
+
+  /// Set
+  @override
+  Future<void> setString(String key, String value) {
+    return _sharedPreferences.setString(key, value);
+  }
+
+  @override
+  Future<void> setBool(String key, bool value) {
+    return _sharedPreferences.setBool(key, value);
   }
 
   @override
@@ -42,6 +49,12 @@ class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
   }
 
   @override
+  Future<void> setDouble(String key, double value) {
+    return _sharedPreferences.setDouble(key, value);
+  }
+
+  /// Utility
+  @override
   Future<void> remove(String key) {
     return _sharedPreferences.remove(key);
   }
@@ -49,11 +62,6 @@ class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
   @override
   Future<void> clearAll() {
     return _sharedPreferences.clear();
-  }
-
-  @override
-  Future<void> setDouble(String key, double value) {
-    return _sharedPreferences.setDouble(key, value);
   }
 
   @override
