@@ -10,7 +10,7 @@ Repository class to handle in-memory data
   chili_flutter_storage_impl:
     git:
       url: https://github.com/ChiliLabs/chili-flutter-storage-impl.git
-      ref: main
+      ref: 0.0.1
 ```
 
 2. For shared preferences - create shared prefs instance in main.dart
