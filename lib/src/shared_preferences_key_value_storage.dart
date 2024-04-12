@@ -1,24 +1,15 @@
 import 'package:chili_flutter_storage/chili_flutter_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesKeyValueStorage implements KeyValueStorage {
+class SharedPreferencesKeyValueStorage implements SharedPreferencesStorage {
   final SharedPreferences _sharedPreferences;
 
   SharedPreferencesKeyValueStorage(this._sharedPreferences);
 
-  @override
-  Future<Set<String>> getKeys() async {
-    return _sharedPreferences.getKeys();
-  }
-
+  /// Get
   @override
   Future<String?> getString(String key) async {
     return _sharedPreferences.getString(key);
-  }
-
-  @override
-  Future<void> setString(String key, String value) {
-    return _sharedPreferences.setString(key, value);
   }
 
   @override
@@ -27,13 +18,29 @@ class SharedPreferencesKeyValueStorage implements KeyValueStorage {
   }
 
   @override
-  Future<void> setBool(String key, bool value) {
-    return _sharedPreferences.setBool(key, value);
+  Future<int?> getInt(String key) async {
+    return _sharedPreferences.getInt(key);
   }
 
   @override
-  Future<int?> getInt(String key) async {
-    return _sharedPreferences.getInt(key);
+  Future<double?> getDouble(String key) async {
+    return _sharedPreferences.getDouble(key);
+  }
+
+  @override
+  Future<Set<String>> getKeys() async {
+    return _sharedPreferences.getKeys();
+  }
+
+  /// Set
+  @override
+  Future<void> setString(String key, String value) {
+    return _sharedPreferences.setString(key, value);
+  }
+
+  @override
+  Future<void> setBool(String key, bool value) {
+    return _sharedPreferences.setBool(key, value);
   }
 
   @override
@@ -42,6 +49,12 @@ class SharedPreferencesKeyValueStorage implements KeyValueStorage {
   }
 
   @override
+  Future<void> setDouble(String key, double value) {
+    return _sharedPreferences.setDouble(key, value);
+  }
+
+  /// Utility
+  @override
   Future<void> remove(String key) {
     return _sharedPreferences.remove(key);
   }
@@ -49,5 +62,18 @@ class SharedPreferencesKeyValueStorage implements KeyValueStorage {
   @override
   Future<void> clearAll() {
     return _sharedPreferences.clear();
+  }
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    final allKeys = await getKeys();
+    var data = <String, String>{};
+
+    for (final key in allKeys) {
+      final value = _sharedPreferences.get(key);
+      data[key] = value.toString();
+    }
+
+    return data;
   }
 }

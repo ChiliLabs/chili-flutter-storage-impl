@@ -3,12 +3,13 @@ import 'package:chili_flutter_storage/chili_flutter_storage.dart';
 
 typedef ErrorCallback = void Function(Object ex, StackTrace st);
 
-class SecureKeyValueStorage implements KeyValueStorage {
+class SecureKeyValueStorage implements SecureStorage {
   final FlutterSecureStorage _storage;
   final ErrorCallback onError;
 
   const SecureKeyValueStorage(this._storage, {required this.onError});
 
+  /// Get
   @override
   Future<bool?> getBool(String key) async {
     final val = await _read(key);
@@ -26,13 +27,22 @@ class SecureKeyValueStorage implements KeyValueStorage {
   }
 
   @override
+  Future<String?> getString(String key) => _read(key);
+
+  @override
+  Future<double?> getDouble(String key) async {
+    final val = await _read(key);
+    if (val == null) return null;
+
+    return double.tryParse(val);
+  }
+
+  @override
   Future<Set<String>> getKeys() async {
     return (await _readAll()).keys.toSet();
   }
 
-  @override
-  Future<String?> getString(String key) => _read(key);
-
+  /// Set
   @override
   Future<void> setBool(String key, bool value) async {
     await _write(key: key, value: value ? 'true' : 'false');
@@ -49,6 +59,12 @@ class SecureKeyValueStorage implements KeyValueStorage {
   }
 
   @override
+  Future<void> setDouble(String key, double value) async {
+    await _write(key: key, value: value.toString());
+  }
+
+  /// Utility
+  @override
   Future<void> remove(String key) async {
     try {
       await _storage.delete(key: key);
@@ -64,6 +80,15 @@ class SecureKeyValueStorage implements KeyValueStorage {
     } catch (ex, st) {
       onError(ex, st);
     }
+  }
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    final data = await _storage.readAll();
+    final sortedData = Map.fromEntries(
+      data.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)),
+    );
+    return sortedData;
   }
 
   Future<String?> _read(String key) async {
