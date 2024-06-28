@@ -5,9 +5,18 @@ typedef ErrorCallback = void Function(Object ex, StackTrace st);
 
 class SecureKeyValueStorage implements SecureStorage {
   final FlutterSecureStorage _storage;
+  final bool iOSTransferToCloud;
   final ErrorCallback onError;
 
-  const SecureKeyValueStorage(this._storage, {required this.onError});
+  final _iOSDisableCloudStoringOptions = const IOSOptions(
+    accessibility: KeychainAccessibility.first_unlock_this_device,
+  );
+
+  const SecureKeyValueStorage(
+    this._storage, {
+    required this.onError,
+    this.iOSTransferToCloud = true,
+  });
 
   /// Get
   @override
@@ -67,7 +76,10 @@ class SecureKeyValueStorage implements SecureStorage {
   @override
   Future<void> remove(String key) async {
     try {
-      await _storage.delete(key: key);
+      await _storage.delete(
+        key: key,
+        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+      );
     } catch (ex, st) {
       onError(ex, st);
     }
@@ -93,7 +105,10 @@ class SecureKeyValueStorage implements SecureStorage {
 
   Future<String?> _read(String key) async {
     try {
-      return await _storage.read(key: key);
+      return await _storage.read(
+        key: key,
+        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+      );
     } catch (ex, st) {
       onError(ex, st);
 
@@ -113,7 +128,11 @@ class SecureKeyValueStorage implements SecureStorage {
 
   Future<void> _write({required String key, required String value}) async {
     try {
-      await _storage.write(key: key, value: value);
+      await _storage.write(
+        key: key,
+        value: value,
+        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+      );
     } catch (ex, st) {
       onError(ex, st);
     }
