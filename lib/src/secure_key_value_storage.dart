@@ -1,5 +1,5 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:chili_flutter_storage/chili_flutter_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 typedef ErrorCallback = void Function(Object ex, StackTrace st);
 
@@ -19,6 +19,9 @@ class SecureKeyValueStorage implements SecureStorage {
   });
 
   /// Get
+  IOSOptions? get _iosOptions =>
+      iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions;
+
   @override
   Future<bool?> getBool(String key) async {
     final val = await _read(key);
@@ -78,7 +81,7 @@ class SecureKeyValueStorage implements SecureStorage {
     try {
       await _storage.delete(
         key: key,
-        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+        iOptions: _iosOptions,
       );
     } catch (ex, st) {
       onError(ex, st);
@@ -88,7 +91,9 @@ class SecureKeyValueStorage implements SecureStorage {
   @override
   Future<void> clearAll() async {
     try {
-      await _storage.deleteAll();
+      await _storage.deleteAll(
+        iOptions: _iosOptions,
+      );
     } catch (ex, st) {
       onError(ex, st);
     }
@@ -96,7 +101,9 @@ class SecureKeyValueStorage implements SecureStorage {
 
   @override
   Future<Map<String, String>> readAll() async {
-    final data = await _storage.readAll();
+    final data = await _storage.readAll(
+      iOptions: _iosOptions,
+    );
     final sortedData = Map.fromEntries(
       data.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)),
     );
@@ -107,7 +114,7 @@ class SecureKeyValueStorage implements SecureStorage {
     try {
       return await _storage.read(
         key: key,
-        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+        iOptions: _iosOptions,
       );
     } catch (ex, st) {
       onError(ex, st);
@@ -118,7 +125,9 @@ class SecureKeyValueStorage implements SecureStorage {
 
   Future<Map<String, String>> _readAll() async {
     try {
-      return await _storage.readAll();
+      return await _storage.readAll(
+        iOptions: _iosOptions,
+      );
     } catch (ex, st) {
       onError(ex, st);
 
@@ -131,7 +140,7 @@ class SecureKeyValueStorage implements SecureStorage {
       await _storage.write(
         key: key,
         value: value,
-        iOptions: iOSTransferToCloud ? null : _iOSDisableCloudStoringOptions,
+        iOptions: _iosOptions,
       );
     } catch (ex, st) {
       onError(ex, st);
