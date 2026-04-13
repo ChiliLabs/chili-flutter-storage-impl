@@ -1,14 +1,14 @@
 name: chili_flutter_storage_impl
 description: Implementation of KeyValueStorage abstract class
-version: 0.0.5
+version: 0.0.6
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=2.19.0 <4.0.0'
 
 dependencies:
-  flutter_secure_storage: ^9.2.4
-  shared_preferences: ^2.2.3
+  flutter_secure_storage: ^10.0.0
+  shared_preferences: ^2.5.5
   chili_flutter_storage:
     git:
       url: https://github.com/ChiliLabs/chili-flutter-storage.git
